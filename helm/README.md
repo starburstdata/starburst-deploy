@@ -23,7 +23,7 @@ This directory contains all the yamls, shell commands, and instructions on deplo
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [helm](https://helm.sh/docs/intro/install/)
 
-2. Set the following shell variables according to your deployment goals:
+2. Set the following shell variables accordingly:
 ```
 ## Deploy Starburst ##
 export registry_usr=?
