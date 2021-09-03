@@ -22,6 +22,10 @@ This directory contains all the yamls, shell commands, and instructions on deplo
 1. Ensure that you have installed these components:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [helm](https://helm.sh/docs/intro/install/)
+- [lens](https://k8slens.dev/)
+
+**NOTE:**
+*You are not required to run Lens, however, it will make it a lot easier to monitor your deployments as you are running through each step*
 
 2. Set the following shell variables accordingly:
 ```
@@ -72,7 +76,7 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 **NOTE!**
 *Steps 6 to 8 are only required if you are deploying nginx and using dns to access the deployed applications.*
 
-6. Deploy Nginx LoadBalancer
+6. Deploy Nginx LoadBalancer:
 ```
 helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
 	--set controller.nodeSelector.starburstpool=base \
@@ -80,7 +84,7 @@ helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
 	--set controller.admissionWebhooks.patch.nodeSelector.starburstpool=base
 ```
 
-7. Deploy Certificate Manager
+7. Deploy Certificate Manager:
 ```
 helm upgrade cert-manager jetstack/cert-manager --install --namespace certs-manager --create-namespace \
 	--set installCRDs=true \
@@ -89,10 +93,13 @@ helm upgrade cert-manager jetstack/cert-manager --install --namespace certs-mana
 	--set cainjector.nodeSelector.starburstpool=base
 ```
 
-8. Deploy Certificate Issuer
+8. Deploy Certificate Issuer:
+
+Wait for the Certificate Manager to complete its deployment. Next, make a local copy of [cert-issuer.yaml](https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/cert-issuer.yaml). Add your email address to this file in the place indicated. After the file has been edited, run the following command:
 ```
 kubectl apply -f cert-issuer.yaml
 ```
+
 ---
 
 ## Deploying Starburst and Ranger
