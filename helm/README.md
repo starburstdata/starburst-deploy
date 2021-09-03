@@ -102,7 +102,7 @@ kubectl apply -f cert-issuer.yaml
 
 9. Deploy Starburst Enterprise
 ```
-helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install --values ${github_link}starburst.yaml --values ${github_link}starburst_ingress.yaml \
+helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install --values ${github_link}starburst.yaml --values ${github_link}starburst.yaml \
 	--set expose.type=ingress \
 	--set expose.ingress.host=${starburst_url:?You need to specify a url} \
 	--set registryCredentials.username=${registry_usr} \
