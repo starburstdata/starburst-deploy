@@ -1,0 +1,21 @@
+database:
+  external:
+    driver: org.postgresql.Driver
+    jdbcUrl: jdbc:postgresql://postgresql:5432/hive
+    user: postgres
+    password: password123
+  type: external
+
+expose:
+  type: clusterIp
+
+image:
+  repository: harbor.starburstdata.net/starburstdata/hive
+
+objectStorage:
+  gs:
+    cloudKeyFileSecret: service-account-key
+
+registryCredentials:
+  enabled: true
+  registry: harbor.starburstdata.net/starburstdata

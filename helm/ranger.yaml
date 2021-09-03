@@ -1,0 +1,55 @@
+admin:
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 1
+      memory: 1Gi
+  serviceUser: 
+
+database:
+  external:
+    databaseName: ranger
+    databasePassword: password123
+    databaseRootPassword: password123
+    databaseRootUser: postgres
+    databaseUser: ranger
+    host: postgresql
+    port: 5432
+  type: external
+
+datasources:
+- host: coordinator
+  name: starburst-enterprise
+  password: 
+  port: 8080
+  username: 
+
+expose:
+  type: loadBalancer"
+  loadBalancer:
+    name: ranger
+    ports:
+      http:
+        port: 6080
+  ingress:
+    serviceName: ranger
+    servicePort: 6080
+    host: 
+    path: "/"
+    pathType: Prefix
+    tls:
+      enabled: true
+      secretName: tls-secret-ranger
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt
+
+initFile: files/initFile.sh
+
+registryCredentials:
+  enabled: true
+  password: 
+  registry: harbor.starburstdata.net/starburstdata
+  username: 
