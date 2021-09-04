@@ -133,7 +133,7 @@ gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction ex
 
 OR
 
-For creating dns entries in AWS, use this:
+For creating dns entries in AWS, follow these steps:
 
 ```
 # Get the external hostname created for the nginx load balancer
@@ -142,7 +142,7 @@ export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonp
 
 OR
 
-For creating dns entries in Azure, use this:
+For creating dns entries in Azure, follow these steps:
 ```
 # Get the external IP address created for the nginx load balancer
 export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
