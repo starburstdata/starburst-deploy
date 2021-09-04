@@ -71,7 +71,7 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 ```
 ---
 
-## OPTIONAL: Deploying an Nginx Load Balancer
+## OPTIONAL: Deploying an Nginx Load Balancer and setup dns
 
 **NOTE!**
 *Steps 6 to 8 are only required if you are deploying nginx and using dns to access the deployed applications.*
@@ -100,6 +100,54 @@ Wait for the Certificate Manager to complete its deployment. Next, make a local 
 kubectl apply -f cert-issuer.yaml
 ```
 
+9. Setup dns:
+
+*Please note, that you are not restricted to creating a dns entry for your cluster in the same cloud where your cluster is running.*
+
+For creating dns entries in Google Cloud, follow these steps:
+
+```
+# Set this to the Google Project where your dns zone is defined
+export google_cloud_project_dns=?
+```
+```
+# Set your cloud dns zone name
+export google_cloud_dns_zone=?
+```
+```
+# Get the external IP address created for the nginx load balancer
+export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+ 
+```
+gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
+gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${starburst_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
+gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
+```
+ 
+```
+gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
+gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${ranger_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
+gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
+```
+
+OR
+
+For creating dns entries in AWS, use this:
+
+```
+# Get the external hostname created for the nginx load balancer
+export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+```
+
+OR
+
+For creating dns entries in Azure, use this:
+```
+# Get the external IP address created for the nginx load balancer
+export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
 ---
 
 ## Deploying Starburst and Ranger
@@ -116,10 +164,6 @@ helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install -
 	--set registryCredentials.password=${registry_pwd} \
 	--set "catalogs.bigquery=connector.name=bigquery
 		bigquery.project-id=${google_cloud_project}" \
-	--set "catalogs.postgresql=connector.name=postgresql
-		connection-url=jdbc:postgresql://postgresql:5432/insights
-		connection-user=postgres
-		connection-password=${postgres_pwd}" \
 	--set "coordinator.etcFiles.properties.access-control\.properties=access-control.name=ranger
 		ranger.authentication-type=BASIC
 		ranger.policy-rest-url=http://ranger:6080

@@ -3,6 +3,11 @@ catalogs:
     connector.name=hive-hadoop2
     hive.allow-drop-table=true
     hive.metastore.uri=thrift://hive:9083
+  postgres: |
+    connector.name=postgresql
+    connection-url=jdbc:postgresql://postgresql:5432/insights
+    connection-user=postgres
+    connection-password=password123
 
 coordinator:
   additionalProperties: |
