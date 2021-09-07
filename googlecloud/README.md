@@ -75,6 +75,7 @@ If you are deploying to a cloud shell or to a remote system and you are using Le
 echo gcloud container clusters get-credentials ${cluster_name:?Cluster name not set} --zone ${zone:?Zone not set} --project ${google_cloud_project:?Project not set}
 ```
 Then run the output from the echo command on your local machine to update your local kubectl.config with your new cluster's details.
+
 ---
 
 ## Cleaning up
