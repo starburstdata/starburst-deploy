@@ -3,9 +3,14 @@ apiVersion: cert-manager.io/v1
 kind:   ClusterIssuer
 
 metadata:
-  name: acme
+  name: letsencrypt
 
   namespace: certs-manager
+
+  labels:
+    environment: <environment name. e.g. test, prod, working, demo, etc.>
+    name: letsencrypt
+    iac: "Deployed-via-starburst-deploy"
 
 spec:
   acme:

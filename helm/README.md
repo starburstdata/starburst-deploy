@@ -107,28 +107,20 @@ kubectl apply -f cert-issuer.yaml
 For creating dns entries in Google Cloud, follow these steps:
 
 ```
-# Set this to the Google Project where your dns zone is defined
-export google_cloud_project_dns=?
-```
-```
-# Set your cloud dns zone name
-export google_cloud_dns_zone=?
-```
-```
 # Get the external IP address created for the nginx load balancer
 export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
  
 ```
-gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
-gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${starburst_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
-gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
+gcloud dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
+gcloud dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${starburst_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
+gcloud dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
 ```
  
 ```
-gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
-gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${ranger_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
-gcloud beta dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
+gcloud dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
+gcloud dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${ranger_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
+gcloud dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
 ```
 
 OR
@@ -202,3 +194,8 @@ helm upgrade starburst-ranger starburstdata/starburst-ranger --install --values 
 	--set nodeSelector.starburstpool=base
 ```
 ---
+11. Conection info.
+Run this command to get a connection info summary for your environment:
+```
+echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url}/ui/insights\nranger:\t\thttps://${ranger_url}"
+```
