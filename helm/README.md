@@ -1,4 +1,4 @@
-# Deploying Starburst to Kubernetes
+# Deploying Starburst on Kubernetes
 Some simple prebuilt scripts and yamls to quickly deploy Starburst. Includes the following required and optional components:
    - Postgres Database on Kubernetes
    - Hive Metastore Service
@@ -27,17 +27,17 @@ This directory contains all the yamls, shell commands, and instructions on deplo
 **NOTE:**
 *You are not required to run Lens, however, it will make it a lot easier to monitor your deployments as you are running through each step*
 
-2. Set the following shell variables accordingly:
+2. Edit and set the following shell variables:
 ```
 ## Deploy Starburst ##
 export registry_usr=?
 export registry_pwd=?
 export admin_usr=?
 export admin_pwd=?
-# For Google Deployments
-export google_cloud_project=?
+
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
+
 # These URLS are used if deploying nginx and dns.
 export starburst_url=?
 export ranger_url=?
@@ -184,7 +184,7 @@ helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install -
 	--set worker.resources.limits.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
 	--set userDatabase.users[0].username=${admin_usr} \
 	--set userDatabase.users[0].password=${admin_pwd} \
-	--set expose.ingress.host=${starburst_url:?You need to specify a url} \
+	--set expose.ingress.host=${starburst_url:?Starburst url not set} \
 	--set coordinator.nodeSelector.starburstpool=base \
 	--set worker.nodeSelector.starburstpool=worker
 ```
@@ -193,7 +193,7 @@ helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install -
 ```
 helm upgrade starburst-ranger starburstdata/starburst-ranger --install --values ${github_link}ranger.yaml \
 	--set expose.type=ingress \
-	--set expose.ingress.host=${ranger_url:?You need to specify a url} \
+	--set expose.ingress.host=${ranger_url:?Ranger url not set} \
 	--set registryCredentials.username=${registry_usr} \
 	--set registryCredentials.password=${registry_pwd} \
 	--set admin.serviceUser=${admin_usr} \
