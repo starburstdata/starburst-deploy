@@ -3,7 +3,7 @@ Command line instructions to deploy a Google Kubernetes Engine cluster. These ha
 
 ## Setup instructions
 1. Edit and set the following shell variables:
-```
+```shell
 # Google Cloud DNS
 export google_cloud_project_dns=?
 export google_cloud_dns_zone=?
@@ -17,7 +17,7 @@ export cluster_name=?
 ```
 
 2. Create the GKE cluster
-```
+```shell
 gcloud container clusters create "${cluster_name:?Cluster name not set}" \
     --project "${google_cloud_project:?Project name not set}" \
     --zone "${zone:?Zone not set}" \
@@ -53,17 +53,17 @@ gcloud container node-pools create "worker" \
 ```
 
 3. Upload your Starburst license file as a secret to your GKE cluster
-```
+```shell
 kubectl create secret generic starburst --from-file ${starburst_license}
 ```
 4. Get your service account credentials from Google
-```
+```shell
 gcloud iam service-accounts keys create key.json \
     --iam-account=${iam_account:?Service Account not set}
 ```
 
 5. Upload your service account key.json to the GKE cluster
-```
+```shell
 kubectl create secret generic service-account-key --from-file key.json
 ```
 ---
@@ -71,7 +71,7 @@ kubectl create secret generic service-account-key --from-file key.json
 
 6. Retrieving the kubectl config file.
 If you are deploying to a cloud shell or to a remote system and you are using Lens locally to monitor the deployments, then run this command on your remote system to retrieve the kubernetes configuration:
-```
+```shell
 echo gcloud container clusters get-credentials ${cluster_name:?Cluster name not set} --zone ${zone:?Zone not set} --project ${google_cloud_project:?Project not set}
 ```
 Then run the output from the echo command on your local machine to update your local kubectl.config with your new cluster's details.
@@ -81,20 +81,20 @@ Then run the output from the echo command on your local machine to update your l
 ## Cleaning up
 
 7. Deleting your cluster.
-```
+```shell
 gcloud container clusters delete ${cluster_name} \
     --project "${google_cloud_project:?Project name not set}" \
     --zone "${zone}"
 ```
 
 8. Remote DNS entries.
-```
+```shell
 gcloud dns record-sets delete "${starburst_url}." \
     --project "${google_cloud_project}" \
     --zone="${google_cloud_dns_zone}" \
     --type="A"
 ```
-```
+```shell
 gcloud dns record-sets delete "${ranger_url}." \
     --project "${google_cloud_project}" \
     --zone="${google_cloud_dns_zone}" \

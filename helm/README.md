@@ -10,7 +10,7 @@ Some simple prebuilt scripts and yamls to quickly deploy Starburst. Includes the
 
 This directory contains all the yamls, shell commands, and instructions on deploying Starburst Enterprise to your Kubernetes environment. Before you attempt to run any of these helm scripts, ensure that your Kubernetes environment is up and running.
 
-**NOTE!**
+>**NOTE!**
 *These scripts only work with the Linux/Unix bash shell. Run this on a Mac, Linux or Unix machine if possible OR use a cloud shell from your browser. Amazon, Microsoft and Google offer this utility directly from their UIs.*
 
 ---
@@ -24,11 +24,12 @@ This directory contains all the yamls, shell commands, and instructions on deplo
 - [helm](https://helm.sh/docs/intro/install/)
 - [lens](https://k8slens.dev/)
 
-**NOTE:**
+>**NOTE!**
 *You are not required to run Lens, however, it will make it a lot easier to monitor your deployments as you are running through each step*
 
+
 2. Edit and set the following shell variables:
-```
+```shell
 ## Deploy Starburst ##
 export registry_usr=?
 export registry_pwd=?
@@ -44,7 +45,7 @@ export ranger_url=?
 ```
 
 3. Add the required Helm repositories:
-```
+```shell
 helm repo add --username ${registry_usr} --password ${registry_pwd} starburstdata https://harbor.starburstdata.net/chartrepo/starburstdata
 helm repo add jetstack https://charts.jetstack.io
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -54,15 +55,16 @@ helm repo update
 ---
 
 ## Deploying Postgres and Hive...
+
 4. Deploy Postgres database instance:
-```
+```shell
 helm upgrade postgres bitnami/postgresql --install --values ${github_link}postgres.yaml \
 	--set primary.nodeSelector.starburstpool=base \
 	--set readReplicas.nodeSelector.starburstpool=base
 ```
 
 5. Deploy Hive Metastore Service:
-```
+```shell
 helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}hive.yaml \
 	--set registryCredentials.username=${registry_usr} \
 	--set registryCredentials.password=${registry_pwd} \
@@ -73,11 +75,11 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 
 ## OPTIONAL: Deploying an Nginx Load Balancer and setup dns
 
-**NOTE!**
+>**NOTE!**
 *Steps 6 to 8 are only required if you are deploying nginx and using dns to access the deployed applications.*
 
 6. Deploy Nginx LoadBalancer:
-```
+```shell
 helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
 	--set controller.nodeSelector.starburstpool=base \
 	--set defaultBackend.nodeSelector.starburstpool=base \
@@ -85,7 +87,7 @@ helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
 ```
 
 7. Deploy Certificate Manager:
-```
+```shell
 helm upgrade cert-manager jetstack/cert-manager --install --namespace certs-manager --create-namespace \
 	--set installCRDs=true \
 	--set nodeSelector.starburstpool=base \
@@ -96,7 +98,7 @@ helm upgrade cert-manager jetstack/cert-manager --install --namespace certs-mana
 8. Deploy Certificate Issuer:
 
 Wait for the Certificate Manager to complete its deployment. Next, make a local copy of [cert-issuer.yaml](https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/cert-issuer.yaml). Add your email address to this file in the place indicated. After the file has been edited, run the following command:
-```
+```shell
 kubectl apply -f cert-issuer.yaml
 ```
 
@@ -106,18 +108,18 @@ kubectl apply -f cert-issuer.yaml
 
 For creating dns entries in Google Cloud, follow these steps:
 
-```
+```shell
 # Get the external IP address created for the nginx load balancer
 export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
  
-```
+```shell
 gcloud dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
 gcloud dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${starburst_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
 gcloud dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
 ```
  
-```
+```shell
 gcloud dns --project=${google_cloud_project_dns} record-sets transaction start --zone="${google_cloud_dns_zone}" && \
 gcloud dns --project=${google_cloud_project_dns} record-sets transaction add ${nginx_loadbalancer_ip:?Need to specify an IP or Hostname} --name="${ranger_url}." --ttl="3600" --type="A" --zone="${google_cloud_dns_zone}" && \
 gcloud dns --project=${google_cloud_project_dns} record-sets transaction execute --zone="${google_cloud_dns_zone}"
@@ -127,7 +129,7 @@ OR
 
 For creating dns entries in AWS, follow these steps:
 
-```
+```shell
 # Get the external hostname created for the nginx load balancer
 export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
@@ -135,7 +137,8 @@ export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonp
 OR
 
 For creating dns entries in Azure, follow these steps:
-```
+
+```shell
 # Get the external IP address created for the nginx load balancer
 export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
@@ -144,11 +147,12 @@ export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonp
 
 ## Deploying Starburst and Ranger
 
-**NOTE!**
+>**NOTE!**
 *If you are not deploying Nginx, remove the expose.type and expose.ingress.host 'set' values from the command below*
 
 9. Deploy Starburst Enterprise
-```
+
+```shell
 helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install --values ${github_link}starburst.yaml --values ${github_link}starburst.yaml \
 	--set expose.type=ingress \
 	--set expose.ingress.host=${starburst_url:?You need to specify a url} \
@@ -182,7 +186,8 @@ helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install -
 ```
 
 10. Deploy Apache Ranger
-```
+
+```shell
 helm upgrade starburst-ranger starburstdata/starburst-ranger --install --values ${github_link}ranger.yaml \
 	--set expose.type=ingress \
 	--set expose.ingress.host=${ranger_url:?Ranger url not set} \
@@ -193,9 +198,12 @@ helm upgrade starburst-ranger starburstdata/starburst-ranger --install --values 
 	--set datasources[0].password=${admin_pwd} \
 	--set nodeSelector.starburstpool=base
 ```
+
 ---
+
 11. Conection info.
 Run this command to get a connection info summary for your environment:
-```
+
+```shell
 echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url}/ui/insights\nranger:\t\thttps://${ranger_url}"
 ```
