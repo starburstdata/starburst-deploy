@@ -2,7 +2,12 @@
 Command line instructions to deploy a Google Kubernetes Engine cluster. These have been designed to run on Linux/Unix, Mac or in a Cloud Shell. There are no additional files required to support these instructions.
 
 ## Setup instructions
-1. Edit and set the following shell variables:
+
+1. Ensure that you have installed these components:
+    - [gcloud cli](https://cloud.google.com/sdk/docs/install)
+    - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+
+2. Edit and set the following shell variables:
 ```shell
 # Google Cloud DNS
 export google_cloud_project_dns=?
@@ -14,9 +19,14 @@ export zone=?
 export google_cloud_project=?
 export iam_account=<sa-name@project-id.iam.gserviceaccount.com>
 export cluster_name=?
+
+export xtra_args_hive="--set objectStorage.gs.cloudKeyFileSecret=service-account-key"
+export xtra_args_starburst="--set \"catalogs.bigquery=connector.name=bigquery
+		bigquery.project-id=${google_cloud_project}\""
+export xtra_args_ranger=""
 ```
 
-2. Create the GKE cluster
+3. Create the GKE cluster
 ```shell
 gcloud container clusters create "${cluster_name:?Cluster name not set}" \
     --project "${google_cloud_project:?Project name not set}" \
@@ -52,42 +62,44 @@ gcloud container node-pools create "worker" \
     --node-locations "${zone:?Zone not set}"
 ```
 
-3. Upload your Starburst license file as a secret to your GKE cluster
+4. Upload your Starburst license file as a secret to your GKE cluster
 ```shell
 kubectl create secret generic starburst --from-file ${starburst_license}
 ```
-4. Get your service account credentials from Google
+5. Get your service account credentials from Google
 ```shell
 gcloud iam service-accounts keys create key.json \
     --iam-account=${iam_account:?Service Account not set}
 ```
 
-5. Upload your service account key.json to the GKE cluster
+6. Upload your service account key.json to the GKE cluster
 ```shell
 kubectl create secret generic service-account-key --from-file key.json
 ```
 ---
 ## Post-installation
 
-6. Retrieving the kubectl config file.
+7. Retrieving the kubectl config file.
 If you are deploying to a cloud shell or to a remote system and you are using Lens locally to monitor the deployments, then run this command on your remote system to retrieve the kubernetes configuration:
+
 ```shell
 echo gcloud container clusters get-credentials ${cluster_name:?Cluster name not set} --zone ${zone:?Zone not set} --project ${google_cloud_project:?Project not set}
 ```
+
 Then run the output from the echo command on your local machine to update your local kubectl.config with your new cluster's details.
 
 ---
 
 ## Cleaning up
 
-7. Deleting your cluster.
+8. Delete your cluster.
 ```shell
 gcloud container clusters delete ${cluster_name} \
     --project "${google_cloud_project:?Project name not set}" \
     --zone "${zone}"
 ```
 
-8. Remote DNS entries.
+9. Remove DNS entries.
 ```shell
 gcloud dns record-sets delete "${starburst_url}." \
     --project "${google_cloud_project}" \

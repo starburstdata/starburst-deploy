@@ -1,0 +1,58 @@
+# A simple cluster with two managed nodegroups:
+--- 
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: CLUSTER_NAME
+  region: CLUSTER_REGION
+
+vpc:
+  id: "CLUSTER_VPC"  # (optional, must match VPC ID used for each subnet below)
+  subnets:
+    # must provide 'private' and/or 'public' subnets by availibility zone as shown
+    public:
+      us-east-1a:
+        id: "CLUSTER_SUBNET_1"
+
+      us-east-1b:
+        id: "CLUSTER_SUBNET_2"
+
+managedNodeGroups:
+  - name: base
+    instanceTypes: ["m5.2xlarge", "m5a.2xlarge"]
+    desiredCapacity: 1
+    labels: {starburstpool: base}
+    availabilityZones: [us-east-1a]
+    iam:
+      withAddonPolicies:
+        externalDNS: true
+        certManager: true
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AutoScalingFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+  
+  - name: worker
+    instanceTypes: ["m5.xlarge", "m5a.xlarge", "m5ad.xlarge"]
+    spot: true
+    minSize: 1
+    desiredCapacity: 1
+    maxSize: 4
+    labels: {starburstpool: worker}
+    availabilityZones: [us-east-1a]
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        externalDNS: true
+        certManager: true
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AutoScalingFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
