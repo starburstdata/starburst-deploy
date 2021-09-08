@@ -12,10 +12,6 @@ expose:
 image:
   repository: harbor.starburstdata.net/starburstdata/hive
 
-objectStorage:
-  gs:
-    cloudKeyFileSecret: service-account-key
-
 registryCredentials:
   enabled: true
   registry: harbor.starburstdata.net/starburstdata
