@@ -150,6 +150,28 @@ OR
 export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
+```shell
+az network dns record-set a add-record \
+    --record-set-name ${starburst_rs_name} \
+    --ipv4-address ${nginx_loadbalancer_ip:?Value not set} \
+    --subscription ${dns_subscription:?Value not set} \
+    --resource-group ${dns_resource_group} \
+    --zone-name ${zone_name:?Value not set} \
+    --ttl 3600 \
+    --if-none-match
+```
+
+```shell
+az network dns record-set a add-record \
+    --record-set-name ${ranger_rs_name} \
+    --ipv4-address ${nginx_loadbalancer_ip:?Value not set} \
+    --subscription ${dns_subscription:?Value not set} \
+    --resource-group ${dns_resource_group} \
+    --zone-name ${zone_name:?Value not set} \
+    --ttl 3600 \
+    --if-none-match
+```
+
 ---
 
 ## Deploying Starburst and Ranger
