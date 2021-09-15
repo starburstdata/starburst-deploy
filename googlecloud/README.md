@@ -9,6 +9,19 @@ Command line instructions to deploy a Google Kubernetes Engine cluster. These ha
 
 2. Edit and set the following shell variables:
 ```shell
+## Deploy Starburst ##
+export registry_usr=?
+export registry_pwd=?
+export admin_usr=?
+export admin_pwd=?
+
+# Shouldn't need to change this link, unless we move the repo
+export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
+
+# These URLS are used if deploying nginx and dns.
+export starburst_url=?
+export ranger_url=?
+
 # Google Cloud DNS
 export google_cloud_project_dns=?
 export google_cloud_dns_zone=?

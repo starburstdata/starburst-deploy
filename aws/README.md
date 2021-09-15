@@ -11,8 +11,21 @@ Command line instructions to deploy an Amazon EKS cluster. These have been desig
 
 2. Edit and set the following shell variables:
 ```shell
+## Deploy Starburst ##
+export registry_usr=?
+export registry_pwd=?
+export admin_usr=?
+export admin_pwd=?
+
+# Shouldn't need to change this link, unless we move the repo
+export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
+
 # AWS DNS
 export hosted_zone_id=?
+
+# These URLS are used if deploying nginx and dns.
+export starburst_url=?
+export ranger_url=?
 
 # AWS Environment
 export region=?
