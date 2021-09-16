@@ -7,7 +7,16 @@ Command line instructions to deploy an Azure Kubernetes Service cluster. These h
     - [azure cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
     - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
-2. Edit and set the following shell variables:
+2. Ensure that you are running these in the `bash` shell
+
+>NOTE!
+This is pretty important if you are running these commands on a Mac, which defaults to the zsh. You will need to switch to the bash terminal since it can handle multi-line strings referenced later in some of the helm commands
+
+```shell
+bash
+```
+
+3. Edit and set the following shell variables:
 
 ```shell
 # Shouldn't need to change this link, unless we move the repo
@@ -48,17 +57,17 @@ export xtra_args_hive="--set commonLabels.aadpodidbinding=starburst \
 export xtra_args_starburst="--set worker.tolerations[0].key=kubernetes.azure.com/scalesetpriority \
         --set worker.tolerations[0].operator=Exists \
         --set worker.tolerations[0].effect=NoSchedule \
-        --values hive.adls.yaml"
+        --values starburst.adls.yaml"
 export xtra_args_ranger=""
 ```
 
-3. Generate the Hive catalog yaml
+4. Generate the Azure-specific Starburst catalog yaml
 
 >NOTE!
 This command generates a static yaml file that will be deployed later with your Starburst application
 
 ```shell
-cat <<EOF > hive.adls.yaml
+cat <<EOF > starburst.adls.yaml
 catalogs:
     hive: |
         connector.name=hive-hadoop2
@@ -76,19 +85,19 @@ One these initial steps have been completed, you will use the `az-cli` to deploy
 
 ## Installation
 
-4. Login to the Azure CLI
+5. Login to the Azure CLI
 ```shell
 az login
 ```
 
-5. Create the Resource Group
+6. Create the Resource Group
 ```shell
 az group create --resource-group ${resource_group:?Value not set} \
     --location "${region:?Value not set}" \
     --subscription "${subscription:?Value not set}"
 ```
 
-6. Create the AKS cluster
+7. Create the AKS cluster
 ```shell
 az aks create --name ${cluster_name:?Value not set} \
     --subscription ${subscription:?Value not set} \
@@ -117,13 +126,13 @@ az aks nodepool add \
     --labels "starburstpool=worker"
 ```
 
-7. Upload your Starburst license file as a secret to your AKS cluster
+8. Upload your Starburst license file as a secret to your AKS cluster
 
 ```shell
 kubectl create secret generic starburst --from-file ${starburst_license}
 ```
 
-8. Create a Storage Account for Hive
+9. Create a Storage Account for Hive
 
 ```shell
 az storage account create --name ${storage_account:?Value not set} \
@@ -138,7 +147,7 @@ az storage account create --name ${storage_account:?Value not set} \
 
 ## Post-installation
 
-9. OPTIONAL: Retrieving the kubectl config file.
+10. OPTIONAL: Retrieving the kubectl config file.
 >NOTE!
 If you are running the installation steps locally, then your Kubernetes config file will be undated automatically, so you do not need to run this optional step.
 
@@ -159,7 +168,7 @@ Then run the output from the echo command on your local machine to update your l
 >NOTE!
 The following steps will destroy all the infrastructure created in the previous steps. Use these commands to clean up your environment once you are done with it.
 
-10. Delete your cluster.
+11. Delete your cluster.
 ```shell
 az aks delete \
     --name ${cluster_name:?Value not set} \
@@ -167,7 +176,7 @@ az aks delete \
     --resource-group ${resource_group}
 ```
 
-11. Remove DNS entries.
+12. Remove DNS entries.
 
 ```shell
 az network dns record-set a delete \
@@ -185,7 +194,7 @@ az network dns record-set a delete \
     --zone-name ${zone_name:?Value not set}
 ```
 
-12. Delete Resource Group.
+13. Delete Resource Group.
 
 ```shell
 az group delete --resource-group ${resource_group:?Value not set} \
