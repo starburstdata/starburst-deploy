@@ -19,12 +19,15 @@ bash
 ```
 
 3. Edit and set the following shell variables:
+
+>TIP: Copy and paste this section into a shell script and edit the values from there.
+
 ```shell
 ## Deploy Starburst ##
-export registry_usr=?
-export registry_pwd=?
-export admin_usr=?
-export admin_pwd=?
+export registry_usr=?           # Harbor Repository username provided tou by Starburst
+export registry_pwd=?           # Harbor Repository passowrd provided tou by Starburst
+export admin_usr=?              # Admin user you will use to login to Starburst & Ranger. Can be any value you want
+export admin_pwd=?              # Admin password you will use to login to Starburst & Ranger. Can be any value you want
 
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
@@ -33,15 +36,15 @@ export github_link="https://raw.githubusercontent.com/starburstdata/starburst-de
 export hosted_zone_id=?
 
 # These URLS are used if deploying nginx and dns.
-export starburst_url=?
-export ranger_url=?
-
-# AWS Environment
-export region=?
-export cluster_name=?
+export starburst_url=?                          # Don't include the http:// prefix
+export ranger_url=?                             # Don't include the http:// prefix
 
 # Cluster specifics
-export starburst_license=starburstdata.license
+export starburst_license=starburstdata.license  # # License file provided by Starburst
+export region=?                                 # AWS Region to deploy your cluster to
+export cluster_name=?                           # Give your cluster a name
+
+# These last remaining values are static
 export xtra_args_hive=""
 export xtra_args_starburst=""
 export xtra_args_ranger=""

@@ -17,37 +17,41 @@ bash
 ```
 
 3. Edit and set the following shell variables:
+
+>TIP: Copy and paste this section into a shell script and edit the values from there.
+
 ```shell
 ## Deploy Starburst ##
-export registry_usr=?
-export registry_pwd=?
-export admin_usr=?
-export admin_pwd=?
+export registry_usr=?           # Harbor Repository username provided tou by Starburst
+export registry_pwd=?           # Harbor Repository passowrd provided tou by Starburst
+export admin_usr=?              # Admin user you will use to login to Starburst & Ranger. Can be any value you want
+export admin_pwd=?              # Admin password you will use to login to Starburst & Ranger. Can be any value you want
 
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
 
 # These URLS are used if deploying nginx and dns.
-export starburst_url=?
-export ranger_url=?
+export starburst_url=?          # Don't include the http:// prefix
+export ranger_url=?             # Don't include the http:// prefix
 
 # Google Cloud DNS
-export google_cloud_project_dns=?
-export google_cloud_dns_zone=?
+export google_cloud_project_dns=?       # The Google Cloud Project ID where your DNS Zone is defined
+export google_cloud_dns_zone=?          # The DNS Zone name (NOT the DNS Name). You can find this value in https://console.cloud.google.com/net-services/dns/zones
 
 # Cluster specifics
-export starburst_license=starburstdata.license
-export zone=?
-export google_cloud_project=?
-export iam_account=<sa-name@project-id.iam.gserviceaccount.com>
-export cluster_name=?
+export starburst_license=starburstdata.license                      # License file provided by Starburst
+export zone=?                                                       # Zone where the cluster will be deployed
+export google_cloud_project=?                                       # Google Cloud Project ID where the cluster is being deployed
+export iam_account=<sa-name@project-id.iam.gserviceaccount.com>     # Google Service account name. The service account is used to access services like GCS and BigQuery, so you should ensure that it has the relevant permissions for these
+export cluster_name=?                                               # Give your cluster a name
 
+# These last remaining values are static
 export xtra_args_hive="--set objectStorage.gs.cloudKeyFileSecret=service-account-key"
 export xtra_args_starburst="--values starburst.bigQuery.yaml"
 export xtra_args_ranger=""
 ```
 
-4. Generate the Azure-specific Starburst catalog yaml
+4. Generate the Google Cloud-specific Starburst catalog yaml
 
 >NOTE!
 This command generates a static yaml file that will be deployed later with your Starburst application
@@ -65,6 +69,9 @@ EOF
 
 ## Installation
 
+**NOTE!**
+>The initial cluster create command in Google includes a default node pool which is deleted by the script and replaced with two separate node pools: `base` and `worker`. Setting up these node pools is not required by Starburst, but doing so will make it easier for you to identify where each pod is deployed and to manage the resources available to them. It also enables you to leverage preemtible nodes for the worker pool.
+
 5. Create the GKE cluster
 ```shell
 gcloud container clusters create "${cluster_name:?Cluster name not set}" \
@@ -72,6 +79,7 @@ gcloud container clusters create "${cluster_name:?Cluster name not set}" \
     --zone "${zone:?Zone not set}" \
     --no-enable-basic-auth \
     --metadata disable-legacy-endpoints=true \
+    --scopes "https://www.googleapis.com/auth/cloud-platform" \
     --num-nodes "1" \
     --enable-ip-alias \
     --node-locations "${zone:?Zone not set}" && \
@@ -84,6 +92,7 @@ gcloud container node-pools create "base" \
     --project "${google_cloud_project:?Project name not set}" \
     --zone "${zone:?Zone not set}" \
     --machine-type "e2-standard-8" \
+    --scopes "https://www.googleapis.com/auth/cloud-platform" \
     --num-nodes "1" \
     --node-labels starburstpool=base \
     --node-locations "${zone:?Zone not set}" && \
@@ -92,6 +101,7 @@ gcloud container node-pools create "worker" \
     --project "${google_cloud_project:?Project name not set}" \
     --zone "${zone:?Zone not set}" \
     --machine-type "e2-standard-8" \
+    --scopes "https://www.googleapis.com/auth/cloud-platform" \
     --preemptible \
     --num-nodes "1" \
     --enable-autoscaling \

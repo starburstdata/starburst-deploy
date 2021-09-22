@@ -27,24 +27,7 @@ This directory contains all the yamls, shell commands, and instructions on deplo
 >**NOTE!**
 *You are not required to run Lens, however, it will make it a lot easier to monitor your deployments as you are running through each step*
 
-
-2. Edit and set the following shell variables:
-```shell
-## Deploy Starburst ##
-export registry_usr=?
-export registry_pwd=?
-export admin_usr=?
-export admin_pwd=?
-
-# Shouldn't need to change this link, unless we move the repo
-export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
-
-# These URLS are used if deploying nginx and dns.
-export starburst_url=?
-export ranger_url=?
-```
-
-3. Add the required Helm repositories:
+2. Add the required Helm repositories:
 ```shell
 helm repo add --username ${registry_usr} --password ${registry_pwd} starburstdata https://harbor.starburstdata.net/chartrepo/starburstdata
 helm repo add jetstack https://charts.jetstack.io
@@ -55,14 +38,14 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 ## Deploying Postgres and Hive...
 
-4. Deploy Postgres database instance:
+3. Deploy Postgres database instance:
 ```shell
 helm upgrade postgres bitnami/postgresql --install --values ${github_link}postgres.yaml \
 	--set primary.nodeSelector.starburstpool=base \
 	--set readReplicas.nodeSelector.starburstpool=base
 ```
 
-5. Deploy Hive Metastore Service:
+4. Deploy Hive Metastore Service:
 ```shell
 helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}hive.yaml \
 	--set registryCredentials.username=${registry_usr:?Value not set} \
@@ -76,7 +59,7 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 >**NOTE!**
 *Steps 6 to 8 are only required if you are deploying nginx and using dns to access the deployed applications.*
 
-6. Deploy Nginx LoadBalancer:
+5. Deploy Nginx LoadBalancer:
 ```shell
 helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
 	--set controller.nodeSelector.starburstpool=base \
@@ -84,7 +67,7 @@ helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
 	--set controller.admissionWebhooks.patch.nodeSelector.starburstpool=base
 ```
 
-7. Deploy Certificate Manager:
+6. Deploy Certificate Manager:
 ```shell
 helm upgrade cert-manager jetstack/cert-manager --install --namespace certs-manager --create-namespace \
 	--set installCRDs=true \
@@ -93,22 +76,22 @@ helm upgrade cert-manager jetstack/cert-manager --install --namespace certs-mana
 	--set cainjector.nodeSelector.starburstpool=base
 ```
 
-8. Deploy Certificate Issuer:
+7. Deploy Certificate Issuer:
 
 Wait for the Certificate Manager to complete its deployment. Next, make a local copy of [cert-issuer.yaml](https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/cert-issuer.yaml). Add your email address to this file in the place indicated. After the file has been edited, run the following command:
 ```shell
 kubectl apply -f cert-issuer.yaml
 ```
 
-9. Setup dns:
+8. Setup dns:
 
 >**NOTE!**
 You are not restricted to creating a dns entry for your cluster in the same cloud where your cluster is running.*
 
 >For creating dns entries in Google Cloud, follow these steps:
 
+Firt, get the external IP address created for the nginx load balancer
 ```shell
-# Get the external IP address created for the nginx load balancer
 export nginx_loadbalancer_ip=$(kubectl get svc ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
  

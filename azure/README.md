@@ -18,6 +18,8 @@ bash
 
 3. Edit and set the following shell variables:
 
+>TIP: Copy and paste this section into a shell script and edit the values from there.
+
 ```shell
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
@@ -30,10 +32,10 @@ export starburst_rs_name=?      # Record Set DNS entry for Starburst application
 export ranger_rs_name=?         # Record Set DNS entry for Ranger application (e.g sb-test-aks-ranger)
 
 # Azure SP has to be explicitly defined. Managed Identities not currently supported
-export abfs_auth_type=oauth
-export abfs_client_id=?
-export abfs_secret=?
-export tenant_id=?
+export abfs_auth_type=oauth     # Default to `oauth` unless you have a good reason to use `accessKey`
+export abfs_client_id=?         # Service Principal Client ID (From Azure AD)
+export abfs_secret=?            # Service Principal Secret (From Azure AD)
+export tenant_id=?              # Your Azure domain (a.k.a tenant ID)
 export abfs_endpoint="https://login.microsoftonline.com/${tenant_id:?Value not set}/oauth2/token" # This value is dynalically set based on your tenant
 
 # These URLS are used if deploying nginx and dns.
@@ -42,12 +44,12 @@ export ranger_url=${ranger_rs_name}.${zone_name} # This value is dynamically set
 
 # Azure Environment
 export subscription=?       # Subscription where Starburst will be deployed
-export region=?             # Azure Region
+export region=?             # Azure Region where the cluster will be deployed
 export resource_group=?     # Resource Group that will be created for the deployment
-export cluster_name=?       # Name of the cluster
+export cluster_name=?       # Give your cluster a name
 export storage_account=?    # Storage Account that will be created for Hive
 
-# Cluster specifics
+# These last remaining values are static
 export starburst_license="starburstdata.license"
 export xtra_args_hive="--set commonLabels.aadpodidbinding=starburst \
         --set objectStorage.azure.abfs.authType=oauth \
