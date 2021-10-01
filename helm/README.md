@@ -57,7 +57,7 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 ## OPTIONAL: Deploying an Nginx Load Balancer and setup dns
 
 >**NOTE!**
-*Steps 6 to 8 are only required if you are deploying nginx and using dns to access the deployed applications.*
+*Steps 5 to 7 are only required if you are deploying nginx and using dns to access the deployed applications.*
 
 5. Deploy Nginx LoadBalancer:
 ```shell
