@@ -27,7 +27,7 @@ datasources:
   username: 
 
 expose:
-  type: loadBalancer"
+  type: loadBalancer
   loadBalancer:
     name: ranger
     ports:
