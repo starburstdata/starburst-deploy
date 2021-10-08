@@ -57,7 +57,7 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 ## OPTIONAL: Deploying an Nginx Load Balancer and setup dns
 
 >**NOTE!**
-*Steps 5 to 8 are only required if you are deploying nginx and using dns to access the deployed applications.*
+*Steps 5 to 8 are only required if you are deploying nginx and using dns to access the deployed applications. Skip to step 9 if you do not require an Nginx loadbalancer or tls certificate from `letsencrypt.org` installed*
 
 5. Deploy Nginx LoadBalancer:
 ```shell
@@ -168,12 +168,12 @@ az network dns record-set a add-record \
 ## Deploying Starburst and Ranger
 
 >**NOTE!**
-*If you are not deploying Nginx, remove the expose.type and expose.ingress.host 'set' values from the command below*
+*If you are not deploying Nginx, remove the expose.type and expose.ingress.host 'set' values from the command below. The expose type on the Starburst application will default to `LoadBalancer`*
 
 9. Deploy Starburst Enterprise
 
 ```shell
-helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install --values ${github_link}starburst.yaml --values ${github_link}starburst.yaml \
+helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install --values ${github_link}starburst.yaml \
 	--set expose.type=ingress \
 	--set expose.ingress.host=${starburst_url:?You need to specify a url} \
 	--set registryCredentials.username=${registry_usr:?Value not set} \
@@ -198,7 +198,6 @@ helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install -
 	--set worker.resources.limits.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
 	--set userDatabase.users[0].username=${admin_usr:?Value not set} \
 	--set userDatabase.users[0].password=${admin_pwd:?Value not set} \
-	--set expose.ingress.host=${starburst_url:?Starburst url not set} \
 	--set coordinator.nodeSelector.starburstpool=base \
 	--set worker.nodeSelector.starburstpool=worker ${xtra_args_starburst}
 ```
@@ -220,8 +219,14 @@ helm upgrade starburst-ranger starburstdata/starburst-ranger --install --values 
 ---
 
 11. Conection info.
-Run this command to get a connection info summary for your environment:
+Run the appropriate command below to get a connection info summary for your environment:
 
+>AWS Environments:
 ```shell
-echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url}/ui/insights\nranger:\t\thttps://${ranger_url}\n\n"
+echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}\n\n"
+```
+
+>Google Cloud and Azure environments:
+```shell
+echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}\n\n"
 ```
