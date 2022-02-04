@@ -21,6 +21,12 @@ bash
 >TIP: Copy and paste this section into a shell script and edit the values from there.
 
 ```shell
+## Deploy Starburst ##
+export registry_usr=?
+export registry_pwd=?
+export admin_usr=?
+export admin_pwd=?
+
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
 
