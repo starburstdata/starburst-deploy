@@ -41,7 +41,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 3. Deploy Postgres database instance:
 ```shell
 helm upgrade postgres bitnami/postgresql --install --values ${github_link}postgres.yaml \
-	--version 10.16.2 \
+    --version 10.16.2 \
     --set primary.nodeSelector.starburstpool=base \
     --set readReplicas.nodeSelector.starburstpool=base
 ```
