@@ -31,7 +31,7 @@ export admin_pwd=?
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
 
 # Azure DNS
-export dns_subscription=?       # Azure subscription containing your DNS zone
+export dns_subscription=?       # Azure subscription ID containing your DNS zone
 export dns_resource_group=?     # Resource Group containing your DNS zone
 export zone_name=?              # DNS Zone name (e.g. some.domain.net)
 export starburst_rs_name=?      # Record Set DNS entry for Starburst application (e.g. sb-test-aks-starburst)
@@ -49,7 +49,7 @@ export starburst_url=${starburst_rs_name}.${zone_name} # This value is dynamical
 export ranger_url=${ranger_rs_name}.${zone_name} # This value is dynamically set
 
 # Azure Environment
-export subscription=?       # Subscription where Starburst will be deployed
+export subscription=?       # Subscription ID where Starburst will be deployed
 export region=?             # Azure Region where the cluster will be deployed
 export resource_group=?     # Resource Group that will be created for the deployment
 export cluster_name=?       # Give your cluster a name
@@ -111,64 +111,55 @@ az aks create --name ${cluster_name:?Value not set} \
     --subscription ${subscription:?Value not set} \
     --resource-group ${resource_group:?Value not set} \
     --enable-managed-identity \
-	--enable-cluster-autoscaler \
-	--min-count 1 \
-	--max-count 1 \
-	--node-count 1 \
-	--node-vm-size Standard_D8s_v3 \
-	--generate-ssh-keys \
-	--network-plugin azure \
-	--nodepool-name base \
+    --enable-cluster-autoscaler \
+    --min-count 1 \
+    --max-count 1 \
+    --node-count 1 \
+    --node-vm-size Standard_D8s_v3 \
+    --generate-ssh-keys \
+    --network-plugin azure \
+    --nodepool-name base \
     --nodepool-labels "starburstpool=base" && \
 az aks nodepool add \
     --subscription ${subscription:?Value not set} \
-	--resource-group ${resource_group:?Value not set} \
-	--cluster-name ${cluster_name:?Value not set} \
-	--name worker \
-	--enable-cluster-autoscaler \
- 	--node-count 1 \
- 	--min-count 1 \
- 	--max-count 10 \
- 	--node-vm-size Standard_D8s_v3 \
+    --resource-group ${resource_group:?Value not set} \
+    --cluster-name ${cluster_name:?Value not set} \
+    --name worker \
+    --enable-cluster-autoscaler \
+    --node-count 1 \
+    --min-count 1 \
+    --max-count 10 \
+    --node-vm-size Standard_D8s_v3 \
     --priority Spot \
     --labels "starburstpool=worker"
 ```
 
-8. Upload your Starburst license file as a secret to your AKS cluster
+8. Retrieving the kubectl config file.
 
 ```shell
-kubectl create secret generic starburst --from-file ${starburst_license}
-```
-
-9. Create a Storage Account for Hive
-
-```shell
-az storage account create --name ${storage_account:?Value not set} \
-	--resource-group ${resource_group:?Value not set} \
-	--kind StorageV2 \
-	--sku Standard_LRS \
-	--https-only false \
-	--enable-hierarchical-namespace false
-```
-
----
-
-## Post-installation
-
-10. OPTIONAL: Retrieving the kubectl config file.
->NOTE!
-If you are running the installation steps locally, then your Kubernetes config file will be undated automatically, so you do not need to run this optional step.
-
-If you are deploying to a cloud shell or to a remote system and you are using Lens locally to monitor the deployments, then run this command on your remote system to retrieve the kubernetes configuration:
-
-```shell
-echo az aks get-credentials \
+az aks get-credentials \
     --subscription ${subscription:?Value not set} \
     --resource-group ${resource_group:?Value not set} \
     --name ${cluster_name:?Value not set}
 ```
 
-Then run the output from the echo command on your local machine to update your local kubectl.config with your new cluster's details.
+9. Upload your Starburst license file as a secret to your AKS cluster
+
+```shell
+kubectl create secret generic starburst --from-file ${starburst_license}
+```
+
+10. Create a Storage Account for Hive
+
+```shell
+az storage account create --name ${storage_account:?Value not set} \
+    --resource-group ${resource_group:?Value not set} \
+    --subscription "${subscription:?Value not set}" \
+    --kind StorageV2 \
+    --sku Standard_LRS \
+    --https-only false \
+    --enable-hierarchical-namespace false
+```
 
 ---
 

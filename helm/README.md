@@ -41,39 +41,40 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 3. Deploy Postgres database instance:
 ```shell
 helm upgrade postgres bitnami/postgresql --install --values ${github_link}postgres.yaml \
-	--set primary.nodeSelector.starburstpool=base \
-	--set readReplicas.nodeSelector.starburstpool=base
+	--version 10.16.2 \
+    --set primary.nodeSelector.starburstpool=base \
+    --set readReplicas.nodeSelector.starburstpool=base
 ```
 
 4. Deploy Hive Metastore Service:
 ```shell
 helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}hive.yaml \
-	--set registryCredentials.username=${registry_usr:?Value not set} \
-	--set registryCredentials.password=${registry_pwd:?Value not set} \
-	--set nodeSelector.starburstpool=base ${xtra_args_hive}
+    --set registryCredentials.username=${registry_usr:?Value not set} \
+    --set registryCredentials.password=${registry_pwd:?Value not set} \
+    --set nodeSelector.starburstpool=base ${xtra_args_hive}
 ```
 ---
 
 ## OPTIONAL: Deploying an Nginx Load Balancer and setup dns
 
 >**NOTE!**
-*Steps 5 to 8 are only required if you are deploying nginx and using dns to access the deployed applications. Skip to step 9 if you do not require an Nginx loadbalancer or tls certificate from `letsencrypt.org` installed*
+*Steps 5 to 8 are only required if you require user authentication to Starburst and are deploying nginx and using dns. Skip to step 9 if you do not require an Nginx loadbalancer or tls certificate from `letsencrypt.org` installed*
 
 5. Deploy Nginx LoadBalancer:
 ```shell
 helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
-	--set controller.nodeSelector.starburstpool=base \
-	--set defaultBackend.nodeSelector.starburstpool=base \
-	--set controller.admissionWebhooks.patch.nodeSelector.starburstpool=base
+    --set controller.nodeSelector.starburstpool=base \
+    --set defaultBackend.nodeSelector.starburstpool=base \
+    --set controller.admissionWebhooks.patch.nodeSelector.starburstpool=base
 ```
 
 6. Deploy Certificate Manager:
 ```shell
 helm upgrade cert-manager jetstack/cert-manager --install --namespace certs-manager --create-namespace \
-	--set installCRDs=true \
-	--set nodeSelector.starburstpool=base \
-	--set webhook.nodeSelector.starburstpool=base \
-	--set cainjector.nodeSelector.starburstpool=base
+    --set installCRDs=true \
+    --set nodeSelector.starburstpool=base \
+    --set webhook.nodeSelector.starburstpool=base \
+    --set cainjector.nodeSelector.starburstpool=base
 ```
 
 7. Deploy Certificate Issuer:
@@ -174,46 +175,46 @@ az network dns record-set a add-record \
 
 ```shell
 helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install --values ${github_link}starburst.yaml \
-	--set expose.type=ingress \
-	--set expose.ingress.host=${starburst_url:?You need to specify a url} \
-	--set registryCredentials.username=${registry_usr:?Value not set} \
-	--set registryCredentials.password=${registry_pwd:?Value not set} \
-	--set "coordinator.etcFiles.properties.access-control\.properties=access-control.name=ranger
-		ranger.authentication-type=BASIC
-		ranger.policy-rest-url=http://ranger:6080
-		ranger.service-name=starburst-enterprise
-		ranger.username=${admin_usr:?Value not set}
-		ranger.password=${admin_pwd:?Value not set}
-		ranger.policy-refresh-interval=10s" \
-	--set "worker.etcFiles.properties.access-control\.properties=access-control.name=ranger
-		ranger.authentication-type=BASIC
-		ranger.policy-rest-url=http://ranger:6080
-		ranger.service-name=starburst-enterprise
-		ranger.username=${admin_usr:?Value not set}
-		ranger.password=${admin_pwd:?Value not set}
-		ranger.policy-refresh-interval=10s" \
-	--set worker.resources.requests.memory=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki) \
-	--set worker.resources.requests.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
-	--set worker.resources.limits.memory=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki) \
-	--set worker.resources.limits.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
-	--set userDatabase.users[0].username=${admin_usr:?Value not set} \
-	--set userDatabase.users[0].password=${admin_pwd:?Value not set} \
-	--set coordinator.nodeSelector.starburstpool=base \
-	--set worker.nodeSelector.starburstpool=worker ${xtra_args_starburst}
+    --set expose.type=ingress \
+    --set expose.ingress.host=${starburst_url:?You need to specify a url} \
+    --set registryCredentials.username=${registry_usr:?Value not set} \
+    --set registryCredentials.password=${registry_pwd:?Value not set} \
+    --set "coordinator.etcFiles.properties.access-control\.properties=access-control.name=ranger
+        ranger.authentication-type=BASIC
+        ranger.policy-rest-url=http://ranger:6080
+        ranger.service-name=starburst-enterprise
+        ranger.username=${admin_usr:?Value not set}
+        ranger.password=${admin_pwd:?Value not set}
+        ranger.policy-refresh-interval=10s" \
+    --set "worker.etcFiles.properties.access-control\.properties=access-control.name=ranger
+        ranger.authentication-type=BASIC
+        ranger.policy-rest-url=http://ranger:6080
+        ranger.service-name=starburst-enterprise
+        ranger.username=${admin_usr:?Value not set}
+        ranger.password=${admin_pwd:?Value not set}
+        ranger.policy-refresh-interval=10s" \
+    --set worker.resources.requests.memory=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki) \
+    --set worker.resources.requests.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
+    --set worker.resources.limits.memory=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki) \
+    --set worker.resources.limits.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
+    --set userDatabase.users[0].username=${admin_usr:?Value not set} \
+    --set userDatabase.users[0].password=${admin_pwd:?Value not set} \
+    --set coordinator.nodeSelector.starburstpool=base \
+    --set worker.nodeSelector.starburstpool=worker ${xtra_args_starburst}
 ```
 
 10. Deploy Apache Ranger
 
 ```shell
 helm upgrade starburst-ranger starburstdata/starburst-ranger --install --values ${github_link}ranger.yaml \
-	--set expose.type=ingress \
-	--set expose.ingress.host=${ranger_url:?Ranger url not set} \
-	--set registryCredentials.username=${registry_usr:?Value not set} \
-	--set registryCredentials.password=${registry_pwd:?Value not set} \
-	--set admin.serviceUser=${admin_usr:?Value not set} \
-	--set datasources[0].username=${admin_usr:?Value not set} \
-	--set datasources[0].password=${admin_pwd:?Value not set} \
-	--set nodeSelector.starburstpool=base
+    --set expose.type=ingress \
+    --set expose.ingress.host=${ranger_url:?Ranger url not set} \
+    --set registryCredentials.username=${registry_usr:?Value not set} \
+    --set registryCredentials.password=${registry_pwd:?Value not set} \
+    --set admin.serviceUser=${admin_usr:?Value not set} \
+    --set datasources[0].username=${admin_usr:?Value not set} \
+    --set datasources[0].password=${admin_pwd:?Value not set} \
+    --set nodeSelector.starburstpool=base
 ```
 
 ---
