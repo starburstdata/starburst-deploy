@@ -131,6 +131,9 @@ gcloud container node-pools create "worker" \
 ```
 
 6. Upload your Starburst license file as a secret to your GKE cluster
+
+>NOTE: Skip this step if you are deploying through the Google Marketplace
+
 ```shell
 kubectl create secret generic starburst --from-file ${starburst_license}
 ```
