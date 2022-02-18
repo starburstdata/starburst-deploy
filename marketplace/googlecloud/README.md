@@ -196,7 +196,7 @@ helm upgrade starburst-enterprise https://storage.googleapis.com/starburst-enter
       --set starburst-hive.objectStorage.gs.cloudKeyFileSecret=service-account-key \
       --set starburst-hive.image.tag="$TAG" \
       --set starburst-hive.gcpExtraNodePool=base \
-      --set starburst-hive.enabled=true
+      --set starburst-hive.enabled=true ${xtra_args_starburst}
 ```
 
 ---
