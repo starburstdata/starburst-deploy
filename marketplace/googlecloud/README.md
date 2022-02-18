@@ -152,7 +152,7 @@ gcloud dns --project=${google_cloud_project_dns} record-sets transaction execute
 
 ## Deploying Starburst and Ranger
 
-21. Deploy Starburst & Hive
+21. Update the catalog values file
 
 >NOTE: A version of this file for use outside the Google Marketplace was created as part of the initial infrastructure setup. Recreate the catalog file to ensure that it works with the Google Marketplace deployment. Add your own custom connections to this file.
 
@@ -166,7 +166,7 @@ starburst-enterprise:
 EOF
 ```
 
->SECOND: 
+22. Deploy Starburst & Hive
 
 ```shell
 helm upgrade starburst-enterprise https://storage.googleapis.com/starburst-enterprise/helmCharts/sep-gcp/starburst-enterprise-platform-charts-${TAG:?Tag not set}.tgz --install --values ${github_link}values.yaml \
@@ -215,7 +215,7 @@ http-server.authentication.oauth2.client-secret=${oauth_client_secret:?OAuth Cli
 
 ---
 
-22. Conection info. Run this command to get a connection info summary for your environment:
+23. Conection info. Run this command to get a connection info summary for your environment:
 
 ```shell
 echo -e "\n\nConnection Info:\n----------------\n\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}/ui/insights\n\n"
