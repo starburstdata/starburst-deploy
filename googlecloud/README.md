@@ -7,6 +7,9 @@ Command line instructions to deploy a Google Kubernetes Engine cluster. These ha
     - [gcloud cli](https://cloud.google.com/sdk/docs/install)
     - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
+>NOTE!
+Don't forget to authenticate your gcloud client by running `gcloud login` before continuing on to the next step.
+
 2. Ensure that you are running these in the `bash` shell
 
 >NOTE!
@@ -22,28 +25,44 @@ bash
 
 ```shell
 ## Deploy Starburst ##
-export registry_usr=?           # Harbor Repository username provided tou by Starburst
-export registry_pwd=?           # Harbor Repository passowrd provided tou by Starburst
-export admin_usr=?              # Admin user you will use to login to Starburst & Ranger. Can be any value you want
-export admin_pwd=?              # Admin password you will use to login to Starburst & Ranger. Can be any value you want
+export registry_usr=""           # Harbor Repository username provided to you by Starburst
+export registry_pwd=""           # Harbor Repository passowrd provided to you by Starburst
+export admin_usr=""              # Admin user you will use to login to Starburst & Ranger. Can be any value you want
+export admin_pwd=""              # Admin password you will use to login to Starburst & Ranger. Can be any value you want
 
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
 
-# These URLS are used if deploying nginx and dns.
-export starburst_url=?          # Don't include the http:// prefix
-export ranger_url=?             # Don't include the http:// prefix
-
 # Google Cloud DNS
-export google_cloud_project_dns=?       # The Google Cloud Project ID where your DNS Zone is defined
-export google_cloud_dns_zone=?          # The DNS Zone name (NOT the DNS Name). You can find this value in https://console.cloud.google.com/net-services/dns/zones
+# The Google Cloud Project ID where your DNS Zone is defined. This may be different to the project that you are deployiong the cluster to. Either way, this value will need to be set.
+export google_cloud_project_dns=""
+# The DNS Zone name (NOT the DNS Name). You can find this value in https://console.cloud.google.com/net-services/dns/zones
+export google_cloud_dns_zone=""
 
 # Cluster specifics
-export starburst_license=starburstdata.license                      # License file provided by Starburst
-export zone=?                                                       # Zone where the cluster will be deployed
-export google_cloud_project=?                                       # Google Cloud Project ID where the cluster is being deployed
-export iam_account=<sa-name@project-id.iam.gserviceaccount.com>     # Google Service account name. The service account is used to access services like GCS and BigQuery, so you should ensure that it has the relevant permissions for these
-export cluster_name=?                                               # Give your cluster a name
+# License file provided by Starburst
+export starburst_license=starburstdata.license
+# Zone where the cluster will be deployed
+export zone=""
+# Google Cloud Project ID where the cluster is being deployed
+export google_cloud_project=""
+# Google Service account name. The service account is used to access services like GCS and BigQuery, so you should ensure that it has the relevant permissions for these
+export iam_account=<sa-name@project-id.iam.gserviceaccount.com>
+# Give your cluster a name
+export cluster_name=""
+
+# Set the machine type here. Feel free to change these values to suit your needs.
+export base_node_type="e2-standard-8"
+export worker_node_type="e2-standard-8"
+
+# These next values are automatically set based on your input values
+# We'll automatically get the domain for the zone you are selecting. Comment this out if you don't need DNS
+export google_cloud_dns_zone_name=$(gcloud dns managed-zones describe ${google_cloud_dns_zone:?Zone not set} --project ${google_cloud_project_dns:?Project ID not set} | grep dnsName | awk '{ print $2 }' | sed 's/.$//g')
+
+# This is the public URL to access Starburst
+export starburst_url=${cluster_name:?Cluster Name not set}-starburst.${google_cloud_dns_zone_name}
+# This is the public URL to access Ranger
+export ranger_url=${cluster_name:?Cluster Name not set}-ranger.${google_cloud_dns_zone_name}
 
 # These last remaining values are static
 export xtra_args_hive="--set objectStorage.gs.cloudKeyFileSecret=service-account-key"
@@ -91,7 +110,7 @@ gcloud container node-pools create "base" \
     --cluster "${cluster_name:?Cluster name not set}" \
     --project "${google_cloud_project:?Project name not set}" \
     --zone "${zone:?Zone not set}" \
-    --machine-type "e2-standard-8" \
+    --machine-type "${base_node_type}" \
     --scopes "https://www.googleapis.com/auth/cloud-platform" \
     --num-nodes "1" \
     --node-labels starburstpool=base \
@@ -100,7 +119,7 @@ gcloud container node-pools create "worker" \
     --cluster "${cluster_name:?Cluster name not set}" \
     --project "${google_cloud_project:?Project name not set}" \
     --zone "${zone:?Zone not set}" \
-    --machine-type "e2-standard-8" \
+    --machine-type "${worker_node_type}" \
     --scopes "https://www.googleapis.com/auth/cloud-platform" \
     --preemptible \
     --num-nodes "1" \
