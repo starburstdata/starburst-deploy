@@ -47,7 +47,10 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 >**WARNING!**
 If you do not have the *Billing Account Admininstrator* role and there are no **Reporting service accounts** available, you will not be able to proceed with the Marketplace deployment! Please see your Google Account Administrator to either provide you with this permission or to get the service account created for you. The reporting service account reports usage back to Google for Billing purposes, so it does not require specific access to the project but it will need access to report Billing usage.
 
-6. Check the solution terms and conditions and click on the `Download License Key` button
+6. Check the solution terms and conditions and click on the `Download License Key` button. Apply it to the cluster as follows:
+```shell
+kubectl apply -f license.yaml
+```
 
 7. Set the tag variable to the current version available in the Marketplace, e.g.
 ```shell
