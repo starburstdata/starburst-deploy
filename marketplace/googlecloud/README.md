@@ -174,6 +174,8 @@ helm upgrade starburst-enterprise https://storage.googleapis.com/starburst-enter
       --set "starburst-enterprise.coordinator.etcFiles.properties.config\.properties=coordinator=true
         node-scheduler.include-coordinator=false
         http-server.http.port=8080
+        discovery-server.enabled=true
+        discovery.uri=http://localhost:8080
         usage-metrics.cluster-usage-resource.enabled=true
         http-server.authentication.allow-insecure-over-http=true
         web-ui.enabled=true
