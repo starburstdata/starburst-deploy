@@ -154,6 +154,20 @@ gcloud dns --project=${google_cloud_project_dns} record-sets transaction execute
 
 21. Deploy Starburst & Hive
 
+>NOTE: A version of this file for use outside the Google Marketplace was created as part of the initial infrastructure setup. Recreate the catalog file to ensure that it works with the Google Marketplace deployment. Add your own custom connections to this file.
+
+```shell
+cat <<EOF > starburst.catalog.yaml
+starburst-enterprise:
+    catalogs:
+        bigquery: |
+            connector.name=bigquery
+            bigquery.project-id=${google_cloud_project}
+EOF
+```
+
+>SECOND: 
+
 ```shell
 helm upgrade starburst-enterprise https://storage.googleapis.com/starburst-enterprise/helmCharts/sep-gcp/starburst-enterprise-platform-charts-${TAG:?Tag not set}.tgz --install --values ${github_link}values.yaml \
       --set deployerHelm.image="gcr.io/starburst-public/starburstdata/deployer:$TAG" \
@@ -172,25 +186,25 @@ helm upgrade starburst-enterprise https://storage.googleapis.com/starburst-enter
       --set starburst-enterprise.worker.resources.limits.memory=${worker_resources_memory:-$(echo $(expr $(eval kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki)} \
       --set starburst-enterprise.worker.resources.requests.memory=${worker_resources_memory:-$(echo $(expr $(eval kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki)} \
       --set "starburst-enterprise.coordinator.etcFiles.properties.config\.properties=coordinator=true
-        node-scheduler.include-coordinator=false
-        http-server.http.port=8080
-        discovery-server.enabled=true
-        discovery.uri=http://localhost:8080
-        usage-metrics.cluster-usage-resource.enabled=true
-        http-server.authentication.allow-insecure-over-http=true
-        web-ui.enabled=true
-        http-server.process-forwarded=true
-        web-ui.authentication.type=oauth2
-        http-server.authentication.type=oauth2
-        http-server.authentication.oauth2.issuer=https://accounts.google.com
-        http-server.authentication.oauth2.auth-url=https://accounts.google.com/o/oauth2/v2/auth
-        http-server.authentication.oauth2.token-url=https://oauth2.googleapis.com/token
-        http-server.authentication.oauth2.userinfo-url=https://openidconnect.googleapis.com/v1/userinfo
-        http-server.authentication.oauth2.jwks-url=https://www.googleapis.com/oauth2/v3/certs
-        http-server.authentication.oauth2.principal-field=email
-        http-server.authentication.oauth2.scopes=openid\,https://www.googleapis.com/auth/userinfo.email
-        http-server.authentication.oauth2.client-id=${oauth_client_id:?OAuth Client ID not set}
-        http-server.authentication.oauth2.client-secret=${oauth_client_secret:?OAuth Client Secret not set}" \
+node-scheduler.include-coordinator=false
+http-server.http.port=8080
+discovery-server.enabled=true
+discovery.uri=http://localhost:8080
+usage-metrics.cluster-usage-resource.enabled=true
+http-server.authentication.allow-insecure-over-http=true
+web-ui.enabled=true
+http-server.process-forwarded=true
+web-ui.authentication.type=oauth2
+http-server.authentication.type=oauth2
+http-server.authentication.oauth2.issuer=https://accounts.google.com
+http-server.authentication.oauth2.auth-url=https://accounts.google.com/o/oauth2/v2/auth
+http-server.authentication.oauth2.token-url=https://oauth2.googleapis.com/token
+http-server.authentication.oauth2.userinfo-url=https://openidconnect.googleapis.com/v1/userinfo
+http-server.authentication.oauth2.jwks-url=https://www.googleapis.com/oauth2/v3/certs
+http-server.authentication.oauth2.principal-field=email
+http-server.authentication.oauth2.scopes=openid\,https://www.googleapis.com/auth/userinfo.email
+http-server.authentication.oauth2.client-id=${oauth_client_id:?OAuth Client ID not set}
+http-server.authentication.oauth2.client-secret=${oauth_client_secret:?OAuth Client Secret not set}" \
       --set starburst-enterprise.expose.type=ingress \
       --set starburst-enterprise.expose.ingress.host=${starburst_url:?You need to specify a url} \
       --set starburst-hive.objectStorage.gs.cloudKeyFileSecret=service-account-key \

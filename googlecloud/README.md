@@ -66,17 +66,17 @@ export ranger_url=${cluster_name:?Cluster Name not set}-ranger.${google_cloud_dn
 
 # These last remaining values are static
 export xtra_args_hive="--set objectStorage.gs.cloudKeyFileSecret=service-account-key"
-export xtra_args_starburst="--values starburst.bigQuery.yaml"
+export xtra_args_starburst="--values starburst.catalog.yaml"
 export xtra_args_ranger=""
 ```
 
 4. Generate the Google Cloud-specific Starburst catalog yaml
 
 >NOTE!
-This command generates a static yaml file that will be deployed later with your Starburst application
+This command generates a yaml file that will be deployed later with your Starburst application. Edit this file to add any additional catalogs you need Starburst to connect to.
 
 ```shell
-cat <<EOF > starburst.bigQuery.yaml
+cat <<EOF > starburst.catalog.yaml
 catalogs:
     bigquery: |
         connector.name=bigquery
