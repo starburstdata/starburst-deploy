@@ -10,7 +10,7 @@ metadata:
 vpc:
   id: "CLUSTER_VPC"  # (optional, must match VPC ID used for each subnet below)
   subnets:
-    # must provide 'private' and/or 'public' subnets by availibility zone as shown
+    # must provide 'public' subnets by availibility zone as shown
     public:
       us-east-1a:
         id: "CLUSTER_SUBNET_1"
