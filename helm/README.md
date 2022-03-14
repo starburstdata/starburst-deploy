@@ -58,7 +58,7 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 ## OPTIONAL: Deploying an Nginx Load Balancer and setup dns
 
 >**NOTE!**
-*Steps 5 to 8 are only required if you require user authentication to Starburst and are deploying nginx and using dns. Skip to step 9 if you do not require an Nginx loadbalancer or tls certificate from `letsencrypt.org` installed*
+*Steps 5 to 8 are only needed if you require user authentication to Starburst and are deploying nginx and using dns. Skip to step 9 if you do not require an Nginx loadbalancer or tls certificate from `letsencrypt.org` installed*
 
 5. Deploy Nginx LoadBalancer:
 ```shell
@@ -224,10 +224,10 @@ Run the appropriate command below to get a connection info summary for your envi
 
 >AWS Environments:
 ```shell
-echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}\n\n"
+echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}\n\nNOTE: use http endpoint if not using nginx & dns!\n\n"
 ```
 
 >Google Cloud and Azure environments:
 ```shell
-echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}\n\n"
+echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}\n\nNOTE: use http endpoint if not using nginx & dns!\n\n"
 ```

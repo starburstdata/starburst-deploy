@@ -24,8 +24,8 @@ bash
 ## Deploy Starburst ##
 export registry_usr=?
 export registry_pwd=?
-export admin_usr=?
-export admin_pwd=?
+export admin_usr=?              # Choose an admin user name you will use to login to Starburst & Ranger. Do NOT use 'admin'
+export admin_pwd=?              # Choose an admin password you will use to login to Starburst & Ranger. MUST be a minimum of 8 characters and contain at least one uppercase, lowercase and numeric value.
 
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
