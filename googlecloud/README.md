@@ -138,8 +138,8 @@ gcloud container node-pools create "worker" \
 kubectl create secret generic starburst --from-file ${starburst_license}
 ```
 
-### The Google Service Account
-In order to access BigQuery and GCS, the cluster will need a 
+## The Google Service Account
+The Hive Mestastore Service (HMS) requires a Service Account in order to access Google Cloud Storage (GCS). Ensure that you have an existing one set up, or create a new one with the relevant GCS bucket permissions before proceeding with the next two steps. The Starburst application will use the permission scope set at the creation of the GKE cluster.
 
 7. Get your service account credentials from Google
 ```shell
