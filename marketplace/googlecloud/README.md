@@ -231,7 +231,7 @@ helm upgrade postgres bitnami/postgresql --install --values ${github_link}postgr
 
 >NOTE: This database deploys without a public IP address and is only accessible to the services running on the cluster
 
-## Deploying an Nginx Load Balancer and setup dns
+## Deploying an Nginx Load Balancer with TLS
 
 23. Deploy Nginx LoadBalancer:
 ```shell
