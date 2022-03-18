@@ -40,9 +40,9 @@ export google_cloud_project_dns=""
 export google_cloud_dns_zone=""
 
 # Cluster specifics
-# License file provided by Starburst
+# License file provided by Starburst. Not required if you are deploying via the Google Cloud Marketplace
 export starburst_license=starburstdata.license
-# Zone where the cluster will be deployed
+# Zone where the cluster will be deployed. e.g. us-east4-b
 export zone=""
 # Google Cloud Project ID where the cluster is being deployed
 export google_cloud_project=""
@@ -73,7 +73,7 @@ export xtra_args_ranger=""
 4. Generate the Google Cloud-specific Starburst catalog yaml
 
 >NOTE!
-This command generates a yaml file that will be deployed later with your Starburst application. Edit this file to add any additional catalogs you need Starburst to connect to.
+This command generates a yaml file that will be deployed later with your Starburst application. Edit this file to add any additional catalogs you need Starburst to connect to. If you are deploying via the Google Cloud Marketplace, then you can skip this step since Marketplace uses a different yaml file.
 
 ```shell
 cat <<EOF > starburst.catalog.yaml
@@ -89,7 +89,7 @@ EOF
 ## Installation
 
 **NOTE!**
->The initial cluster create command in Google includes a default node pool which is deleted by the script and replaced with two separate node pools: `base` and `worker`. Setting up these node pools is not required by Starburst, but doing so will make it easier for you to identify where each pod is deployed and to manage the resources available to them. It also enables you to leverage preemtible nodes for the worker pool.
+>The initial cluster create command in Google includes a default node pool which is deleted by the script and replaced with two separate node pools: `base` and `worker`. The worker pool uses preemptible nodes by default. You should remove this line if you require on-demand nodes instead.
 
 5. Create the GKE cluster
 ```shell
@@ -137,6 +137,10 @@ gcloud container node-pools create "worker" \
 ```shell
 kubectl create secret generic starburst --from-file ${starburst_license}
 ```
+
+### The Google Service Account
+In order to access BigQuery and GCS, the cluster will need a 
+
 7. Get your service account credentials from Google
 ```shell
 gcloud iam service-accounts keys create key.json \
@@ -147,6 +151,7 @@ gcloud iam service-accounts keys create key.json \
 ```shell
 kubectl create secret generic service-account-key --from-file key.json
 ```
+
 ---
 ## Post-installation
 

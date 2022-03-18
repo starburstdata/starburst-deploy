@@ -55,7 +55,14 @@ helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}
 ```
 ---
 
-## OPTIONAL: Deploying an Nginx Load Balancer and setup dns
+## OPTIONAL (but strongly recommended): Deploying an Nginx Load Balancer with TLS
+
+Setting up DNS requires a cloud domain. Google, Azure and AWS provide the facility to purchase a domain and set up a DNS zone if you do not have one. You can also use an existing domain and DNS zone that you already own inside or outside the cloud environment that you are deploying to.
+
+The instructions below assume that you have an existing domain and DNS zone, but if you do not, you can purchase one through any of the Cloud providers for a small fee, (see [AWS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html), [Azure](https://docs.microsoft.com/en-us/azure/app-service/manage-custom-dns-buy-domain), and [Google](https://cloud.google.com/domains/docs/register-domain) for more details).
+
+If you are using an existing Domain and DNS Zone *outside* the cloud environemnt, you just need a hostname or IP address created by the cloud provider Network Load Balancer (NLB) when you deploy nginx, to create the 'A' record to your existing DNS zone.
+
 
 >**NOTE!**
 *Steps 5 to 8 are only needed if you require user authentication to Starburst and are deploying nginx and using dns. Skip to step 9 if you do not require an Nginx loadbalancer or tls certificate from `letsencrypt.org` installed*
@@ -169,7 +176,7 @@ az network dns record-set a add-record \
 ## Deploying Starburst and Ranger
 
 >**NOTE!**
-*If you are not deploying Nginx, remove the expose.type and expose.ingress.host 'set' values from the command below. The expose type on the Starburst application will default to `LoadBalancer`*
+*If you are not deploying Nginx, remove the expose.type and expose.ingress.host 'set' values from the command below. The expose type on the Starburst application will default to `ClusterIP`.*
 
 9. Deploy Starburst Enterprise
 

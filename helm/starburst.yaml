@@ -47,7 +47,7 @@ coordinator:
       memory: 12Gi
 
 expose:
-  type: loadBalancer
+  type: clusterIp
   ingress:
     serviceName: starburst
     servicePort: 8080

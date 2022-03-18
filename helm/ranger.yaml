@@ -27,7 +27,7 @@ datasources:
   username: 
 
 expose:
-  type: loadBalancer
+  type: clusterIp
   loadBalancer:
     name: ranger
     ports:
