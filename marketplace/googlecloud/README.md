@@ -25,9 +25,10 @@ bash
 ```
 
 2. Ensure that you have installed these components:
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-- [helm](https://helm.sh/docs/intro/install/)
-- [lens](https://k8slens.dev/) OR [k9s](https://k9scli.io/)
+    - [gcloud cli](https://cloud.google.com/sdk/docs/install)
+    - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+    - [helm](https://helm.sh/docs/intro/install/)
+    - [lens](https://k8slens.dev/) OR [k9s](https://k9scli.io/)
 
 >**NOTE!**
 *You are not required to run Lens or k9s, however, it will make it a lot easier to monitor your deployments as you are running through this. You will want to verify that each pod has been deployed successfully before continuing to the next step in the process*
