@@ -24,25 +24,25 @@ bash
 
 ```shell
 ## Deploy Starburst ##
-export registry_usr=?           # Harbor Repository username provided tou by Starburst
-export registry_pwd=?           # Harbor Repository passowrd provided tou by Starburst
-export admin_usr=?              # Choose an admin user name you will use to login to Starburst & Ranger. Do NOT use 'admin'
-export admin_pwd=?              # Choose an admin password you will use to login to Starburst & Ranger. MUST be a minimum of 8 characters and contain at least one uppercase, lowercase and numeric value.
+export registry_usr=           # Harbor Repository username provided to you by Starburst
+export registry_pwd=           # Harbor Repository password provided to you by Starburst
+export admin_usr=              # Choose an admin user name you will use to login to Starburst & Ranger. Do NOT use 'admin'
+export admin_pwd=              # Choose an admin password you will use to login to Starburst & Ranger. MUST be a minimum of 8 characters and contain at least one uppercase, lowercase and numeric value.
 
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
 
 # AWS DNS
-export hosted_zone_id=?
+export hosted_zone_id=
 
 # These URLS are used if deploying nginx and dns.
-export starburst_url=?                          # Don't include the http:// prefix
-export ranger_url=?                             # Don't include the http:// prefix
+export starburst_url=                          # Don't include the http:// prefix
+export ranger_url=                             # Don't include the http:// prefix
 
 # Cluster specifics
 export starburst_license=starburstdata.license  # # License file provided by Starburst
-export region=?                                 # AWS Region to deploy your cluster to
-export cluster_name=?                           # Give your cluster a name
+export region=                                 # AWS Region to deploy your cluster to
+export cluster_name=                           # Give your cluster a name
 
 # These last remaining values are static
 export xtra_args_hive=""

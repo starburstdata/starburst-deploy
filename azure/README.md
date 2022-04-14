@@ -22,26 +22,26 @@ bash
 
 ```shell
 ## Deploy Starburst ##
-export registry_usr=?
-export registry_pwd=?
-export admin_usr=?              # Choose an admin user name you will use to login to Starburst & Ranger. Do NOT use 'admin'
-export admin_pwd=?              # Choose an admin password you will use to login to Starburst & Ranger. MUST be a minimum of 8 characters and contain at least one uppercase, lowercase and numeric value.
+export registry_usr=
+export registry_pwd=
+export admin_usr=              # Choose an admin user name you will use to login to Starburst & Ranger. Do NOT use 'admin'
+export admin_pwd=              # Choose an admin password you will use to login to Starburst & Ranger. MUST be a minimum of 8 characters and contain at least one uppercase, lowercase and numeric value.
 
 # Shouldn't need to change this link, unless we move the repo
 export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
 
 # Azure DNS
-export dns_subscription=?       # Azure subscription ID containing your DNS zone
-export dns_resource_group=?     # Resource Group containing your DNS zone
-export zone_name=?              # DNS Zone name (e.g. some.domain.net)
-export starburst_rs_name=?      # Record Set DNS entry for Starburst application (e.g. sb-test-aks-starburst)
-export ranger_rs_name=?         # Record Set DNS entry for Ranger application (e.g sb-test-aks-ranger)
+export dns_subscription=       # Azure subscription ID containing your DNS zone
+export dns_resource_group=     # Resource Group containing your DNS zone
+export zone_name=              # DNS Zone name (e.g. some.domain.net)
+export starburst_rs_name=      # Record Set DNS entry for Starburst application (e.g. sb-test-aks-starburst)
+export ranger_rs_name=         # Record Set DNS entry for Ranger application (e.g sb-test-aks-ranger)
 
 # Azure SP has to be explicitly defined. Managed Identities not currently supported
 export abfs_auth_type=oauth     # Default to `oauth` unless you have a good reason to use `accessKey`
-export abfs_client_id=?         # Service Principal Client ID (From Azure AD)
-export abfs_secret=?            # Service Principal Secret (From Azure AD)
-export tenant_id=?              # Your Azure domain (a.k.a tenant ID)
+export abfs_client_id=         # Service Principal Client ID (From Azure AD)
+export abfs_secret=            # Service Principal Secret (From Azure AD)
+export tenant_id=              # Your Azure domain (a.k.a tenant ID)
 export abfs_endpoint="https://login.microsoftonline.com/${tenant_id:?Value not set}/oauth2/token" # This value is dynalically set based on your tenant
 
 # These URLS are used if deploying nginx and dns.
@@ -49,11 +49,11 @@ export starburst_url=${starburst_rs_name}.${zone_name} # This value is dynamical
 export ranger_url=${ranger_rs_name}.${zone_name} # This value is dynamically set
 
 # Azure Environment
-export subscription=?       # Subscription ID where Starburst will be deployed
-export region=?             # Azure Region where the cluster will be deployed
-export resource_group=?     # Resource Group that will be created for the deployment
-export cluster_name=?       # Give your cluster a name
-export storage_account=?    # Storage Account that will be created for Hive
+export subscription=       # Subscription ID where Starburst will be deployed
+export region=             # Azure Region where the cluster will be deployed
+export resource_group=     # Resource Group that will be created for the deployment
+export cluster_name=       # Give your cluster a name
+export storage_account=    # Storage Account that will be created for Hive
 
 # These last remaining values are static
 export starburst_license="starburstdata.license"
