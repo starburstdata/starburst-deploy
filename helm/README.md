@@ -231,10 +231,10 @@ Run the appropriate command below to get a connection info summary for your envi
 
 >AWS Environments:
 ```shell
-echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}\n\nNOTE: use http endpoint if not using nginx & dns!\n\n"
+echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')}\n\nNOTE: use http endpoint if not using nginx & dns\!\n\n"
 ```
 
 >Google Cloud and Azure environments:
 ```shell
-echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}\n\nNOTE: use http endpoint if not using nginx & dns!\n\n"
+echo -e "\n\nConnection Info:\n----------------\n\ncredentials:\t${admin_usr} / ${admin_pwd}\nstarburst:\thttps://${starburst_url:-$(kubectl get svc starburst -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}/ui/insights\nranger:\t\thttps://${ranger_url:-$(kubectl get svc ranger -o jsonpath='{.status.loadBalancer.ingress[0].ip}')}\n\nNOTE: use http endpoint if not using nginx & dns\!\n\n"
 ```
