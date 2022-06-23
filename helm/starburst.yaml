@@ -1,6 +1,6 @@
 catalogs:
   hive: |
-    connector.name=hive-hadoop2
+    connector.name=hive
     hive.allow-drop-table=true
     hive.metastore.uri=thrift://hive:9083
   postgres: |

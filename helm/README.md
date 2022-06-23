@@ -186,6 +186,7 @@ helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install -
     --set expose.ingress.host=${starburst_url:?You need to specify a url} \
     --set registryCredentials.username=${registry_usr:?Value not set} \
     --set registryCredentials.password=${registry_pwd:?Value not set} \
+    --set sharedSecret=$(openssl rand 64 | base64) \
     --set "coordinator.etcFiles.properties.access-control\.properties=access-control.name=ranger
         ranger.authentication-type=BASIC
         ranger.policy-rest-url=http://ranger:6080
