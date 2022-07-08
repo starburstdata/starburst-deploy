@@ -295,6 +295,7 @@ helm upgrade starburst-enterprise https://storage.googleapis.com/starburst-enter
       --set starburst-enterprise.worker.resources.requests.cpu=${worker_resources_requests_cpu:-$(echo $(expr $(eval kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 800)m)} \
       --set starburst-enterprise.worker.resources.limits.memory=${worker_resources_memory:-$(echo $(expr $(eval kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki)} \
       --set starburst-enterprise.worker.resources.requests.memory=${worker_resources_memory:-$(echo $(expr $(eval kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki)} \
+      --set starburst-enterprise.sharedSecret="$(openssl rand 64 | base64)" \
       --set "starburst-enterprise.coordinator.etcFiles.properties.config\.properties=coordinator=true
 node-scheduler.include-coordinator=false
 http-server.http.port=8080
