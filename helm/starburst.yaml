@@ -99,3 +99,9 @@ worker:
       cpu: 
       memory: 
   starburstWorkerShutdownGracePeriodSeconds: 120
+
+tolerations:
+  - key: "kubernetes.azure.com/scalesetpriority"
+    operator: "Equal"
+    value: "spot"
+    effect: "NoSchedule"
