@@ -7,9 +7,6 @@ global:
     postgresqlPassword: password123
     servicePort: "5432"
 
-image:
-  tag: "13"
-
 initdbScripts:
   init.sql: create database hive; create database ranger; create database insights; create database datacache;
 
