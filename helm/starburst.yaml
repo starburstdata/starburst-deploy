@@ -101,5 +101,5 @@ worker:
   starburstWorkerShutdownGracePeriodSeconds: 120
   tolerations:
     - key: "kubernetes.azure.com/scalesetpriority"
-      operator: "Equal"
+      operator: "Exists"
       effect: "NoSchedule"
