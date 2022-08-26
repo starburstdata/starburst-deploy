@@ -29,7 +29,7 @@ This directory contains all the yamls, shell commands, and instructions on deplo
 
 2. Add the required Helm repositories:
 ```shell
-helm repo add --username ${registry_usr} --password ${registry_pwd} starburstdata https://harbor.starburstdata.net/chartrepo/starburstdata
+helm repo add --username ${registry_usr} --password ${registry_pwd} --pass-credentials starburstdata https://harbor.starburstdata.net/chartrepo/starburstdata
 helm repo add jetstack https://charts.jetstack.io
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add bitnami https://charts.bitnami.com/bitnami
