@@ -180,7 +180,7 @@ kubectl apply -f license.yaml
 
 13. Set the tag variable to the current version available in the Marketplace, e.g.
 ```shell
-export TAG="2.5.0"
+export TAG="3.0.0"
 ```
 
 14. Retrieve the reporting secret name from the cluster which was deployed via `license.yaml`
@@ -281,8 +281,8 @@ gcloud dns --project=${google_cloud_project_dns} record-sets transaction execute
 ```shell
 helm upgrade starburst-enterprise https://storage.googleapis.com/starburst-enterprise/helmCharts/sep-gcp/starburst-enterprise-platform-charts-${TAG:?Tag not set}.tgz --install --values ${github_link}values.yaml \
       --set deployerHelm.image="gcr.io/starburst-public/starburstdata/deployer:$TAG" \
-      --set reportingSecret=${reporting_secret_name:?Reporting Secret Name not set} \
-      --set metricsReporter.image="gcr.io/starburst-public/starburstdata/metrics_reporter:$TAG" \
+      --set starburst-enterprise.reportingSecret=${reporting_secret_name:?Reporting Secret Name not set} \
+      --set starburst-enterprise.metricsReporter.image="gcr.io/starburst-public/starburstdata/metrics_reporter:$TAG" \
       --set starburst-enterprise.image.tag="$TAG" \
       --set starburst-enterprise.initImage.tag="$TAG" \
       --set starburst-enterprise.coordinator.resources.limits.cpu=${coordinator_resources_limits_cpu:-$(echo $(expr $(eval kubectl get nodes --selector='starburstpool=base' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 2800)m)} \

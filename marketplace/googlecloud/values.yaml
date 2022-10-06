@@ -2,22 +2,17 @@
 # Overwrite defaults with values specific to Google Cloud marketplace
 
 deployerHelm:
-  image: "gcr.io/starburst-public/starburstdata/deployer:2.3.0"
-
-reportingSecret: ENTERPRISE_LICENSE_NAME
-
-metricsReporter:
-  image: "gcr.io/starburst-public/starburstdata/metrics_reporter:2.3.0"
+  image: "gcr.io/starburst-public/starburstdata/deployer:3.0.0"
 
 imageUbbagent: "gcr.io/cloud-marketplace-tools/metering/ubbagent:latest"
 
 starburst-enterprise:
   image:
     repository: "gcr.io/starburst-public/starburstdata"
-    tag: 2.3.0
+    tag: 3.0.0
   initImage:
     repository: "gcr.io/starburst-public/starburstdata/starburst-enterprise-init"
-    tag: 2.3.0
+    tag: 3.0.0
   prometheus:
     enabled: false
   catalogs:
@@ -117,7 +112,7 @@ starburst-hive:
 
   image:
     repository: "gcr.io/starburst-public/starburstdata/hive"
-    tag: 2.3.0
+    tag: 3.0.0
 
   gcpExtraNodePool: EXTRA_NODE_POOL
 
