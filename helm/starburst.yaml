@@ -29,11 +29,6 @@ coordinator:
         http-server.authentication.allow-insecure-over-http=true
         web-ui.enabled=true
         http-server.process-forwarded=true
-      event-listener.properties: |
-        event-listener.name=event-logger
-        jdbc.url=jdbc:postgresql://postgresql:5432/insights
-        jdbc.user=postgres
-        jdbc.password=password123
       password-authenticator.properties: |
         password-authenticator.name=file
   nodeSelector:
@@ -82,13 +77,6 @@ worker:
     minReplicas: 1
     targetCPUUtilizationPercentage: 80
   deploymentTerminationGracePeriodSeconds: 30
-  etcFiles:
-    properties:
-      event-listener.properties: |
-        event-listener.name=event-logger
-        jdbc.url=jdbc:postgresql://postgresql:5432/insights
-        jdbc.user=postgres
-        jdbc.password=password123
   nodeSelector:
     starburstpool: worker
   resources:
