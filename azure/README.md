@@ -55,6 +55,23 @@ export resource_group=     # Resource Group that will be created for the deploym
 export cluster_name=       # Give your cluster a name
 export storage_account=    # Storage Account that will be created for Hive
 
+# Insights DB details
+# These are the defaults if you choose to deploy your postgresDB to the K8s cluster
+# You can adjust these to connect to an external DB, but be advised that the nodes in the K8s cluster must have access to the URL
+export database_connection_url=jdbc:postgresql://postgresql:5432/insights
+export database_username=postgres
+export database_password=password123
+
+# Data Products. Leave the password unset as below, if you are connecting directly to the coordinator on port 8080
+export data_products_enabled=true
+export data_products_jdbc_url=jdbc:trino://coordinator:8080
+export data_products_username=${admin_usr}
+export data_products_password=
+
+# Starburst Access Control
+export starburst_access_control_enabled=true
+export starburst_access_control_authorized_users=${admin_usr}
+
 # These last remaining values are static
 export starburst_license="starburstdata.license"
 export xtra_args_hive="--set commonLabels.aadpodidbinding=starburst \

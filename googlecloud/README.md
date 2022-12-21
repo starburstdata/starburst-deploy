@@ -64,6 +64,23 @@ export starburst_url=${cluster_name:?Cluster Name not set}-starburst.${google_cl
 # This is the public URL to access Ranger
 export ranger_url=${cluster_name:?Cluster Name not set}-ranger.${google_cloud_dns_zone_name}
 
+# Insights DB details
+# These are the defaults if you choose to deploy your postgresDB to the K8s cluster
+# You can adjust these to connect to an external DB, but be advised that the nodes in the K8s cluster must have access to the URL
+export database_connection_url=jdbc:postgresql://postgresql:5432/insights
+export database_username=postgres
+export database_password=password123
+
+# Data Products. Leave the password unset as below, if you are connecting directly to the coordinator on port 8080
+export data_products_enabled=true
+export data_products_jdbc_url=jdbc:trino://coordinator:8080
+export data_products_username=${admin_usr}
+export data_products_password=
+
+# Starburst Access Control
+export starburst_access_control_enabled=true
+export starburst_access_control_authorized_users=${admin_usr}
+
 # These last remaining values are static
 export xtra_args_hive="--set objectStorage.gs.cloudKeyFileSecret=service-account-key"
 export xtra_args_starburst="--values starburst.catalog.yaml"
