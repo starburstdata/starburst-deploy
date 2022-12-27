@@ -1,4 +1,4 @@
-# Deploying Starburst on Kubernetes
+# Deploying Starburst with Ranger
 Some simple prebuilt scripts and yamls to quickly deploy Starburst. Includes the following required and optional components:
    - Postgres Database on Kubernetes
    - Hive Metastore Service
@@ -40,7 +40,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 3. Deploy Postgres database instance:
 ```shell
-helm upgrade postgres bitnami/postgresql --install --values ${github_link}postgres.yaml \
+helm upgrade postgres bitnami/postgresql --install --values postgres.yaml \
     --version 10.16.2 \
     --set primary.nodeSelector.starburstpool=base \
     --set readReplicas.nodeSelector.starburstpool=base
@@ -48,7 +48,7 @@ helm upgrade postgres bitnami/postgresql --install --values ${github_link}postgr
 
 4. Deploy Hive Metastore Service:
 ```shell
-helm upgrade hive starburstdata/starburst-hive --install --values ${github_link}hive.yaml \
+helm upgrade hive starburstdata/starburst-hive --install --values hive.yaml \
     --set registryCredentials.username=${registry_usr:?Value not set} \
     --set registryCredentials.password=${registry_pwd:?Value not set} \
     --set nodeSelector.starburstpool=base ${xtra_args_hive}

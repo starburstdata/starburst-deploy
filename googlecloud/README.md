@@ -30,9 +30,6 @@ export registry_pwd=""           # Harbor Repository passowrd provided to you by
 export admin_usr=              # Choose an admin user name you will use to login to Starburst & Ranger. Do NOT use 'admin'
 export admin_pwd=              # Choose an admin password you will use to login to Starburst & Ranger. MUST be a minimum of 8 characters and contain at least one uppercase, lowercase and numeric value.
 
-# Shouldn't need to change this link, unless we move the repo
-export github_link="https://raw.githubusercontent.com/starburstdata/starburst-deploy/main/helm/"
-
 # Google Cloud DNS
 # The Google Cloud Project ID where your DNS Zone is defined. This may be different to the project that you are deployiong the cluster to. Either way, this value will need to be set.
 export google_cloud_project_dns=""
