@@ -2,13 +2,19 @@ fullnameOverride: postgresql
 
 global:
   postgresql:
-    postgresqlDatabase: postgres
-    postgresqlUsername: postgres
-    postgresqlPassword: password123
-    servicePort: "5432"
+    auth:
+      database: postgres
+      username: postgres
+      postgresPassword: password123
 
-initdbScripts:
-  init.sql: create database hive; create database ranger; create database insights; create database datacache;
+primary:
+  initdb:
+    scripts:
+      init.sql: |
+        create database hive;
+        create database ranger;
+        create database insights;
+        create database datacache;
 
 service:
   type: ClusterIP

@@ -41,7 +41,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 3. Deploy Postgres database instance:
 ```shell
 helm upgrade postgres bitnami/postgresql --install --values postgres.yaml \
-    --version 10.16.2 \
+    --version 12.1.6 \
     --set primary.nodeSelector.starburstpool=base \
     --set readReplicas.nodeSelector.starburstpool=base
 ```
@@ -177,10 +177,14 @@ helm upgrade starburst-enterprise starburstdata/starburst-enterprise --install -
     --set registryCredentials.username=${registry_usr:?Value not set} \
     --set registryCredentials.password=${registry_pwd:?Value not set} \
     --set sharedSecret="$(openssl rand 64 | base64)" \
-    --set worker.resources.requests.memory=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki) \
-    --set worker.resources.requests.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
-    --set worker.resources.limits.memory=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000)Ki) \
-    --set worker.resources.limits.cpu=$(echo $(expr $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500)m) \
+    --set coordinator.resources.requests.memory=$(echo $(( $(kubectl get nodes --selector='starburstpool=base' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }')*50/100 ))Ki) \
+    --set coordinator.resources.requests.cpu=$(echo $(( $(kubectl get nodes --selector='starburstpool=base' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }')*50/100 ))m) \
+    --set coordinator.resources.limits.memory=$(echo $(( $(kubectl get nodes --selector='starburstpool=base' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }')*50/100 ))Ki) \
+    --set coordinator.resources.limits.cpu=$(echo $(( $(kubectl get nodes --selector='starburstpool=base' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }')*50/100 ))m) \
+    --set worker.resources.requests.memory=$(echo $(( $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000 ))Ki) \
+    --set worker.resources.requests.cpu=$(echo $(( $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500 ))m) \
+    --set worker.resources.limits.memory=$(echo $(( $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.memory}' | awk -F "Ki" '{ print $1 }') - 1000000 ))Ki) \
+    --set worker.resources.limits.cpu=$(echo $(( $(kubectl get nodes --selector='starburstpool=worker' -o jsonpath='{.items[0].status.allocatable.cpu}' | awk -F "m" '{ print $1 }') - 500 ))m) \
     --set userDatabase.users[0].username=${admin_usr:?Value not set} \
     --set userDatabase.users[0].password=${admin_pwd:?Value not set} \
     --set coordinator.nodeSelector.starburstpool=base \
