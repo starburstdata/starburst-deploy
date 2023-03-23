@@ -46,3 +46,10 @@ for i in "admin_usr" "admin_pwd"
 do
     [[ ! -z $(eval echo -n "$"$(echo $i)) ]] && echo " " $i: $(eval echo -n "$"$(echo $i) | base64) >> $secrets_file
 done
+
+echo
+echo "--------------------"
+echo "Secrets file created"
+echo "--------------------"
+cat $secrets_file
+echo

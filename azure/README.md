@@ -92,7 +92,7 @@ This command generates a static yaml file that will be deployed later with your 
 cat <<EOF > starburst.adls.yaml
 catalogs:
     hive: |
-        connector.name=hive-hadoop2
+        connector.name=hive
         hive.allow-drop-table=true
         hive.metastore.uri=thrift://hive:9083
         hive.azure.abfs.oauth.client-id=${abfs_client_id}
