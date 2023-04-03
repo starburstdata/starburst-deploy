@@ -84,7 +84,7 @@ eksctl create cluster -f eksctl.yaml
 >**NOTE!**
 How you authenticate to your AWS environment will depend on your particular security setup. If using IAM Keys, you will need to run `aws configure` and set your keys accordingly. If you are using Okta, you may want to use [gimme-aws-creds](https://github.com/Nike-Inc/gimme-aws-creds).
 
-7. Upload your Starburst license file as a secret to your GKE cluster
+7. Upload your Starburst license file as a secret to your EKS cluster
 ```shell
 kubectl create secret generic starburst --from-file ${starburst_license}
 ```
