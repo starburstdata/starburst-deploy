@@ -77,6 +77,7 @@ export xtra_args_hive="--set commonLabels.aadpodidbinding=starburst \
         --set objectStorage.azure.abfs.oauth.endpoint=${abfs_endpoint} \
         --set objectStorage.azure.abfs.oauth.secret=${abfs_secret}"
 export xtra_args_starburst="--set worker.tolerations[0].key=kubernetes.azure.com/scalesetpriority \
+        --set controller.service.annotations.\"service\\.beta\\.kubernetes\\.io/azure-load-balancer-health-probe-request-path\"=/healthz \
         --set worker.tolerations[0].operator=Exists \
         --set worker.tolerations[0].effect=NoSchedule \
         --values starburst.adls.yaml"
@@ -93,11 +94,15 @@ cat <<EOF > starburst.adls.yaml
 catalogs:
     hive: |
         connector.name=hive
-        hive.allow-drop-table=true
+        hive.security=starburst
         hive.metastore.uri=thrift://hive:9083
         hive.azure.abfs.oauth.client-id=${abfs_client_id}
         hive.azure.abfs.oauth.secret=${abfs_secret}
         hive.azure.abfs.oauth.endpoint=${abfs_endpoint}
+        cache-service.uri=http://coordinator:8180
+        materialized-views.enabled=true
+        materialized-views.namespace=mv_namespace
+        materialized-views.storage-schema=cache
 EOF
 ```
 
