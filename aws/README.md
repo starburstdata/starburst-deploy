@@ -104,7 +104,6 @@ helm upgrade metricsserver bitnami/metrics-server --install \
 
 ```shell
 helm upgrade autoscaler autoscaler/cluster-autoscaler --install \
-    --version 9.3.0 \
     --set cloudProvider=aws \
     --set awsRegion=${region:?Value not set} \
     --set autoDiscovery.clusterName=${cluster_name:?Value not set} \

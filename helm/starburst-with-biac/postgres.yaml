@@ -1,4 +1,5 @@
 fullnameOverride: postgresql
+nameOverride: postgresql
 
 global:
   postgresql:
@@ -6,6 +7,9 @@ global:
       database: postgres
       username: postgres
       postgresPassword: password123
+
+shmVolume:
+  enabled: false
 
 primary:
   initdb:
